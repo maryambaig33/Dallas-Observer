@@ -1,7 +1,9 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { Book } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Initialize with fallback to prevent crash if env var is missing during load
+const apiKey = process.env.API_KEY || "";
+const ai = new GoogleGenAI({ apiKey });
 
 const bookSchema: Schema = {
   type: Type.OBJECT,
