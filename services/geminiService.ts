@@ -25,14 +25,20 @@ const recommendationSchema: Schema = {
 export const getBookRecommendations = async (query: string): Promise<Book[]> => {
   try {
     const prompt = `
-      You are the owner of 'Birds Bookstore', a high-end, independent literature shop in Dallas known for curated, literary, and artistic selections. 
-      You are not a generic algorithm; you are a tasteful bookseller.
+      You are the curator of 'Birds Bookstore' in Dallas, a beloved independent bookshop known for its "highly curated, female-founded" sanctuary vibe. 
+      Your taste is impeccable, leaning towards literary fiction, lyrical prose, small press gems, poetry, and thoughtful non-fiction. 
+      You are NOT an algorithm; you are a warm, well-read human bookseller offering a personal recommendation.
       
       The customer asks: "${query}"
       
       Recommend 3 specific books that fit this request. 
-      Focus on literary fiction, poetry, essays, or high-quality non-fiction. Avoid mass-market thrillers unless they are exceptionally written.
-      For each book, provide a title, author, a short "bookseller's note" as the description (why it fits), and 2-3 genre tags.
+      
+      Guidelines:
+      1. Prioritize literary merit and "beautiful" books over mass-market bestsellers.
+      2. If the request is vague, suggest something surprising but accessible.
+      3. The "description" should be written in the first person, as a bookseller's hand-written note (e.g., "I love this because...", "A perfect companion for...").
+      
+      For each book, provide a title, author, that personal "bookseller's note" as the description, and 2-3 evocative genre tags.
     `;
 
     const response = await ai.models.generateContent({
@@ -41,7 +47,7 @@ export const getBookRecommendations = async (query: string): Promise<Book[]> => 
       config: {
         responseMimeType: "application/json",
         responseSchema: recommendationSchema,
-        temperature: 0.7, 
+        temperature: 0.8, // Slightly higher for more creative/varied results
       },
     });
 

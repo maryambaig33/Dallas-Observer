@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, Loader2, RefreshCw } from 'lucide-react';
+import { Sparkles, ArrowRight, Loader2, RefreshCw, Feather } from 'lucide-react';
 import { getBookRecommendations } from '../services/geminiService';
 import { Book } from '../types';
 import BookCard from './BookCard';
@@ -27,34 +27,34 @@ const VirtualCurator: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center p-3 bg-bird-teal/10 rounded-full mb-6">
-            <Sparkles className="text-bird-teal h-8 w-8" />
+    <div className="min-h-screen bg-transparent py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center justify-center p-4 bg-bird-teal rounded-full mb-8 shadow-lg shadow-bird-teal/20">
+            <Feather className="text-white h-8 w-8" />
           </div>
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-ink mb-4">
-            Ask the Bird
+          <h2 className="font-serif text-5xl md:text-6xl font-medium text-ink mb-6">
+            Your Personal Bookseller
           </h2>
-          <p className="font-serif text-xl text-stone-600 max-w-2xl mx-auto">
+          <p className="font-serif text-xl text-stone-600 max-w-2xl mx-auto leading-relaxed">
             Tell us what you're in the mood for, what you last loved, or a specific feeling you want to capture. 
-            Our digital curator will hand-pick a stack just for you.
+            <br/>Our AI apprentice has been trained on our favorite shelves.
           </p>
         </div>
 
-        <div className="bg-white p-2 rounded-lg shadow-lg mb-16 max-w-2xl mx-auto">
+        <div className="bg-white p-3 rounded-md shadow-xl mb-20 max-w-2xl mx-auto border border-stone-100">
           <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-2">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="e.g., 'Something melancholy set in Paris' or 'Like Haruki Murakami'"
+              placeholder="e.g., 'Something set in a rainy city' or 'Like Sally Rooney but darker'"
               className="flex-1 px-6 py-4 text-lg font-serif outline-none bg-transparent placeholder:text-stone-300 text-stone-800"
             />
             <button
               type="submit"
               disabled={isLoading || !query.trim()}
-              className="px-8 py-4 bg-bird-teal hover:bg-bird-teal/90 text-white rounded-md font-medium transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-8 py-4 bg-bird-teal hover:bg-bird-teal/90 text-white rounded-sm font-medium transition-colors flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight />}
             </button>
@@ -62,34 +62,44 @@ const VirtualCurator: React.FC = () => {
         </div>
 
         {isLoading && (
-          <div className="text-center py-20">
-            <Loader2 className="h-12 w-12 text-bird-teal animate-spin mx-auto mb-4" />
-            <p className="font-serif text-stone-500 text-lg animate-pulse">Checking the shelves...</p>
+          <div className="text-center py-24">
+            <div className="inline-block relative">
+               <Loader2 className="h-12 w-12 text-bird-teal animate-spin mb-4" />
+            </div>
+            <p className="font-serif text-stone-500 text-xl animate-pulse">Scanning the stacks...</p>
           </div>
         )}
 
         {!isLoading && hasSearched && recommendations.length > 0 && (
-          <div className="space-y-16 animate-fade-in">
-            <div className="flex items-center justify-between border-b border-stone-200 pb-4 mb-8">
-              <h3 className="font-serif text-2xl text-ink">Curated for you</h3>
-              <button 
-                onClick={handleSearch}
-                className="flex items-center text-sm text-stone-500 hover:text-bird-teal transition-colors"
-              >
-                <RefreshCw size={14} className="mr-1" /> Regenerate
-              </button>
+          <div className="space-y-12 animate-fade-in">
+            <div className="flex items-center justify-center gap-4 mb-12">
+              <div className="h-px bg-stone-200 w-full max-w-xs"></div>
+              <h3 className="font-serif text-3xl text-ink whitespace-nowrap">A Stack Just For You</h3>
+              <div className="h-px bg-stone-200 w-full max-w-xs"></div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {recommendations.map((book, idx) => (
                 <BookCard key={idx} book={book} />
               ))}
+            </div>
+            
+            <div className="text-center mt-16">
+                 <button 
+                  onClick={handleSearch}
+                  className="inline-flex items-center text-stone-500 hover:text-bird-teal transition-colors font-serif italic text-lg"
+                >
+                  <RefreshCw size={16} className="mr-2" /> 
+                  Try another search?
+                </button>
             </div>
           </div>
         )}
 
         {!isLoading && hasSearched && recommendations.length === 0 && (
-          <div className="text-center py-20 text-stone-500 font-serif text-xl">
-             We couldn't find the perfect match right now. Try rephrasing your request.
+          <div className="text-center py-20 bg-white rounded-lg shadow-sm max-w-xl mx-auto border border-stone-100">
+             <p className="text-stone-500 font-serif text-xl mb-4">Hmm, we couldn't find the perfect match right now.</p>
+             <p className="text-stone-400">Try rephrasing your request, or ask for a "Staff Pick".</p>
           </div>
         )}
       </div>
